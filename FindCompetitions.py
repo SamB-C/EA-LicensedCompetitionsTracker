@@ -1,6 +1,5 @@
 import pandas as pd
 from pathlib import Path
-import sys
 from PostCodeDistanceCalc import PostcodeDistanceCalculator
 from ParseSpreadsheet import get_latest_spreadsheet, parse_spreadsheet_to_dataframe
 
