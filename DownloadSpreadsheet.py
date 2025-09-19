@@ -6,20 +6,20 @@ import time
 from datetime import datetime
 
 
-def download_spreadsheet(url, download_folder="downloads"):
+def download_spreadsheet(url, download_path):
     """
     Download a spreadsheet from the given URL.
 
     Args:
         url (str): The URL to download the spreadsheet from
-        download_folder (str): Folder to save the downloaded file
+        download_folder (Path): Folder to save the downloaded file
 
     Returns:
         str: Path to the downloaded file, or None if download failed
     """
     try:
         # Create download folder if it doesn't exist
-        Path(download_folder).mkdir(exist_ok=True)
+        Path(download_path).mkdir(exist_ok=True)
 
         # Set up headers to mimic a browser request
         headers = {
@@ -59,7 +59,7 @@ def download_spreadsheet(url, download_folder="downloads"):
                 filename = f"england_athletics_competitions_{timestamp}.xlsx"
 
         # Full path for the downloaded file
-        file_path = Path(download_folder) / filename
+        file_path = download_path / filename
 
         # Download the file
         print(f"Saving to: {file_path}")
@@ -99,7 +99,10 @@ def main():
     print("England Athletics Licensed Competitions Tracker")
     print("=" * 50)
 
-    downloaded_file = download_spreadsheet(url)
+    # Set download folder relative to script location
+    script_dir = Path(__file__).parent
+    download_folder = script_dir / "downloads"
+    downloaded_file = download_spreadsheet(url, download_folder)
 
     if downloaded_file:
         print(f"\nSpreadsheet downloaded successfully to: {downloaded_file}")
