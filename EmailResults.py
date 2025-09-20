@@ -159,8 +159,9 @@ def generate_html_email(user_name, user_email, postcode, max_distance, competiti
                 overflow: hidden;
             }}
             .header {{
+                background: #667eea !important;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
+                color: #ffffff !important;
                 padding: 30px;
                 text-align: center;
             }}
@@ -168,11 +169,15 @@ def generate_html_email(user_name, user_email, postcode, max_distance, competiti
                 margin: 0;
                 font-size: 28px;
                 font-weight: 300;
+                color: #ffffff !important;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             }}
             .header p {{
                 margin: 10px 0 0 0;
                 opacity: 0.9;
                 font-size: 16px;
+                color: #ffffff !important;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }}
             .content {{
                 padding: 30px;
@@ -218,13 +223,15 @@ def generate_html_email(user_name, user_email, postcode, max_distance, competiti
             }}
             .distance-badge {{
                 display: inline-block;
-                background: linear-gradient(135deg, #28a745, #20c997);
-                color: white;
+                background: #28a745 !important;
+                color: #ffffff !important;
                 padding: 4px 12px;
                 border-radius: 20px;
                 font-size: 14px;
                 font-weight: 500;
                 margin-top: 5px;
+                border: 1px solid #1e7e34;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }}
             .competition-details {{
                 padding: 20px;
