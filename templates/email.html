@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your Athletics Competitions</title>
+        <style>
+            {css_styles}
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">
+                <h1>🏃‍♂️ Your Athletics Competitions</h1>
+                <p>Licensed competitions near you • {current_date}</p>
+            </div>
+            
+            <div class="content">
+                <div class="greeting">
+                    Hello {user_name}! 👋
+                </div>
+                
+                <div class="search-info">
+                    <strong>Search Parameters:</strong><br>
+                    📍 Your location: {postcode}<br>
+                    📏 Maximum distance: {max_distance} miles
+                </div>
+                
+                {competitions_content}
+            </div>
+            <div class="footer">
+                <p>Generated on {current_date} by Licensed Competitions Tracker</p>
+                <p>Data sourced from England Athletics</p>
+            </div>
+        </div>
+    </body>
+</html>

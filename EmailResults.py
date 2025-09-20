@@ -1,4 +1,5 @@
 from FindCompetitions import find_name_column, find_competitions_within_distance, find_postcode_column
+from EmailTemplateManager import EmailTemplateManager
 from dotenv import load_dotenv
 import os
 from datetime import datetime
@@ -120,7 +121,7 @@ def create_search_links(competition_name, venue=None, location=None):
 
 def generate_html_email(user_name, user_email, postcode, max_distance, competitions_df):
     """
-    Generate HTML email content for a user.
+    Generate HTML email content for a user using templates.
 
     Args:
         user_name (str): User's name
@@ -132,350 +133,105 @@ def generate_html_email(user_name, user_email, postcode, max_distance, competiti
     Returns:
         str: HTML email content
     """
+    template_manager = EmailTemplateManager()
     current_date = datetime.now().strftime("%B %d, %Y")
 
-    # Start building HTML
-    html = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Your Athletics Competitions</title>
-        <style>
-            body {{
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #f5f5f5;
-            }}
-            .email-container {{
-                background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                overflow: hidden;
-            }}
-            .header {{
-                background: #667eea !important;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: #ffffff !important;
-                padding: 30px;
-                text-align: center;
-            }}
-            .header h1 {{
-                margin: 0;
-                font-size: 28px;
-                font-weight: 300;
-                color: #ffffff !important;
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            }}
-            .header p {{
-                margin: 10px 0 0 0;
-                opacity: 0.9;
-                font-size: 16px;
-                color: #ffffff !important;
-                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            }}
-            .content {{
-                padding: 30px;
-            }}
-            .greeting {{
-                font-size: 18px;
-                margin-bottom: 20px;
-                color: #555;
-            }}
-            .search-info {{
-                background-color: #f8f9fa;
-                border-left: 4px solid #667eea;
-                padding: 15px;
-                margin: 20px 0;
-                border-radius: 0 5px 5px 0;
-            }}
-            .competition {{
-                border: 1px solid #e9ecef;
-                border-radius: 8px;
-                margin-bottom: 20px;
-                overflow: hidden;
-                transition: box-shadow 0.3s ease;
-            }}
-            .competition:hover {{
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }}
-            .competition-header {{
-                background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
-                padding: 15px 20px;
-                border-bottom: 1px solid #dee2e6;
-            }}
-            .competition-name {{
-                font-size: 18px;
-                font-weight: 600;
-                color: #495057;
-                margin: 0;
-            }}
-            .competition-host {{
-                font-size: 14px;
-                font-weight: 400;
-                color: #6c757d;
-                margin: 0;
-            }}
-            .distance-badge {{
-                display: inline-block;
-                background: #28a745 !important;
-                color: #ffffff !important;
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 14px;
-                font-weight: 500;
-                margin-top: 5px;
-                border: 1px solid #1e7e34;
-                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            }}
-            .competition-details {{
-                padding: 20px;
-            }}
-            .detail-row {{
-                display: flex;
-                margin-bottom: 10px;
-                align-items: center;
-            }}
-            .detail-label {{
-                font-weight: 600;
-                color: #6c757d;
-                width: 80px;
-                flex-shrink: 0;
-            }}
-            .detail-value {{
-                color: #495057;
-                flex: 1;
-            }}
-            .summary {{
-                background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
-                border-radius: 8px;
-                padding: 20px;
-                margin: 30px 0;
-                text-align: center;
-            }}
-            .summary h3 {{
-                margin: 0 0 15px 0;
-                color: #495057;
-            }}
-            .stats {{
-                display: flex;
-                justify-content: space-around;
-                flex-wrap: wrap;
-            }}
-            .stat {{
-                text-align: center;
-                margin: 10px;
-            }}
-            .stat-number {{
-                font-size: 24px;
-                font-weight: 700;
-                color: #667eea;
-                display: block;
-            }}
-            .stat-label {{
-                font-size: 14px;
-                color: #6c757d;
-                margin-top: 5px;
-            }}
-            .no-competitions {{
-                text-align: center;
-                padding: 40px;
-                color: #6c757d;
-            }}
-            .no-competitions-icon {{
-                font-size: 48px;
-                margin-bottom: 20px;
-            }}
-            .footer {{
-                background-color: #f8f9fa;
-                padding: 20px;
-                text-align: center;
-                color: #6c757d;
-                font-size: 14px;
-            }}
-            .icon {{
-                margin-right: 8px;
-                color: #667eea;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="email-container">
-            <div class="header">
-                <h1>🏃‍♂️ Your Athletics Competitions</h1>
-                <p>Licensed competitions near you • {current_date}</p>
-            </div>
-            
-            <div class="content">
-                <div class="greeting">
-                    Hello {user_name}! 👋
-                </div>
-                
-                <div class="search-info">
-                    <strong>Search Parameters:</strong><br>
-                    📍 Your location: {postcode}<br>
-                    📏 Maximum distance: {max_distance} miles
-                </div>
-    """
-
     if competitions_df is None or len(competitions_df) == 0:
-        html += """
-                <div class="no-competitions">
-                    <div class="no-competitions-icon">😔</div>
-                    <h3>No competitions found</h3>
-                    <p>Sorry, we couldn't find any licensed athletics competitions within your specified distance.</p>
-                    <p>Try increasing your maximum distance or check back later for new competitions.</p>
-                </div>
-        """
+        competitions_content = template_manager.render_no_competitions()
     else:
-        # Add summary statistics
-        distances = competitions_df['distance_miles'].dropna()
-        html += f"""
-                <div class="summary">
-                    <h3>📊 Competition Summary</h3>
-                    <div class="stats">
-                        <div class="stat">
-                            <span class="stat-number">{len(competitions_df)}</span>
-                            <div class="stat-label">Total Found</div>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">{distances.min():.1f}</span>
-                            <div class="stat-label">Closest (miles)</div>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">{distances.max():.1f}</span>
-                            <div class="stat-label">Furthest (miles)</div>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">{distances.mean():.1f}</span>
-                            <div class="stat-label">Average (miles)</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <h2>🏆 Your Competitions</h2>
-        """
+        # Generate summary statistics
+        competitions_content = template_manager.render_summary_stats(competitions_df)
+        competitions_content += "\n<h2>🏆 Your Competitions</h2>\n"
 
-        # Add each competition
+        # Find column mappings
         name_col = find_name_column(competitions_df)
-        host_cols = [
-            col for col in competitions_df.columns if 'pot venue' in col.lower()]
+        host_cols = [col for col in competitions_df.columns if 'pot venue' in col.lower()]
         postcode_col = find_postcode_column(competitions_df)
-        date_cols = [
-            col for col in competitions_df.columns if 'date' in col.lower()]
+        date_cols = [col for col in competitions_df.columns if 'date' in col.lower()]
         venue_cols = [col for col in competitions_df.columns if any(
             word in col.lower() for word in ['venue', 'location', 'place'])]
-        level_cols = [col for col in competitions_df.columns if 'level' in col.lower(
-        ) or 'licence' in col.lower()]
-        link_cols = [col for col in competitions_df.columns if 'link' in col.lower(
-        ) or 'url' in col.lower() or 'wpa endorsed' in col.lower()]
+        level_cols = [col for col in competitions_df.columns if 'level' in col.lower() 
+                     or 'licence' in col.lower()]
+        link_cols = [col for col in competitions_df.columns if 'link' in col.lower() 
+                    or 'url' in col.lower() or 'wpa endorsed' in col.lower()]
 
+        # Generate each competition card
         for i, (_, row) in enumerate(competitions_df.iterrows(), 1):
             distance = row['distance_miles']
 
-            if name_col and pd.notna(row[name_col]):
-                name = str(row[name_col])
-            else:
-                name = f"Competition {i}"
+            # Get competition name and host
+            name = str(row[name_col]) if name_col and pd.notna(row[name_col]) else f"Competition {i}"
+            host = str(row[host_cols[0]]) if host_cols and pd.notna(row[host_cols[0]]) else "Unknown Host"
 
-            if host_cols and pd.notna(row[host_cols[0]]):
-                host = str(row[host_cols[0]])
-            else:
-                host = "Unkown Host"
+            # Generate competition details
+            details_html = generate_competition_details(row, venue_cols, postcode_col, 
+                                                      date_cols, link_cols, level_cols, 
+                                                      template_manager)
 
-            html += f"""
-                <div class="competition">
-                    <div class="competition-header">
-                        <div class="competition-name">{name}</div>
-                        <div class="competition-host">{host}</div>
-                        <span class="distance-badge">📍 {distance:.1f} miles away</span>
-                    </div>
-                    <div class="competition-details">
-            """
+            # Render the competition card
+            competition_card = template_manager.render_competition_card(name, host, distance, details_html)
+            competitions_content += competition_card
 
-            links = create_search_links(name, venue=row[venue_cols[0]] if venue_cols and pd.notna(
-                row[venue_cols[0]]) else None, location=row[postcode_col] if postcode_col and pd.notna(row[postcode_col]) else None)
+    # Render the complete email
+    return template_manager.render_full_email(
+        user_name=user_name,
+        postcode=postcode,
+        max_distance=max_distance,
+        competitions_content=competitions_content,
+        current_date=current_date
+    )
 
-            # Add date if available
-            if date_cols and pd.notna(row[date_cols[0]]):
-                date_str = str(row[date_cols[0]])
-                if '00:00:00' in date_str:
-                    date_str = date_str.split(' ')[0]
-                html += f"""
-                        <div class="detail-row">
-                            <span class="detail-label icon">📅</span>
-                            <span class="detail-value">{date_str}</span>
-                        </div>
-                """
 
-            has_venue = venue_cols and pd.notna(row[venue_cols[0]])
-            has_postcode = postcode_col and pd.notna(row[postcode_col])
-            # Add venue if available
-            if has_venue and not has_postcode:
-                html += f"""
-                        <div class="detail-row">
-                            <span class="detail-label icon">🏟️</span>
-                            <span class="detail-value"><a href="{links['google_maps']}">{row[venue_cols[0]]}</a></span>
-                        </div>
-                """
-            # Add postcode if available
-            if has_venue and has_postcode:
-                html += f"""
-                        <div class="detail-row">
-                            <span class="detail-label icon">🏟️</span>
-                            <span class="detail-value"><a href="{links['google_maps']}">{row[venue_cols[0]]} ({row[postcode_col]})</a></span>
-                        </div>
-                """
-
-            # Add link if available
-            if link_cols and pd.notna(row[link_cols[0]]):
-                html += f"""
-                        <div class="detail-row">
-                            <span class="detail-label icon">🔗</span>
-                            <span class="detail-value"><a href="{row[link_cols[0]]}">View Competition</a></span>
-                        </div>
-                """
-            else:
-                html += f"""
-                        <div class="detail-row">
-                            <span class="detail-label icon">🔗</span>
-                            <span class="detail-value"><a href="{links['google']}">Search Google</a></span>
-                        </div>
-                """
-
-            # Add level if available
-            if level_cols and pd.notna(row[level_cols[0]]):
-                html += f"""
-                        <div class="detail-row">
-                            <span class="detail-label icon">🏅</span>
-                            <span class="detail-value">Level {row[level_cols[0]]} Competition</span>
-                        </div>
-                """
-
-            html += """
-                    </div>
-                </div>
-            """
-
-    # Close HTML
-    html += f"""
-            </div>
-            
-            <div class="footer">
-                <p>Generated on {current_date} by Licensed Competitions Tracker</p>
-                <p>Data sourced from England Athletics</p>
-            </div>
-        </div>
-    </body>
-    </html>
+def generate_competition_details(row, venue_cols, postcode_col, date_cols, link_cols, level_cols, template_manager):
     """
+    Generate HTML for competition details section.
+    
+    Args:
+        row: DataFrame row with competition data
+        venue_cols, postcode_col, date_cols, link_cols, level_cols: Column references
+        template_manager: EmailTemplateManager instance
+        
+    Returns:
+        str: HTML for competition details
+    """
+    details_html = ""
+    
+    # Get venue and location info
+    venue = row[venue_cols[0]] if venue_cols and pd.notna(row[venue_cols[0]]) else None
+    location = row[postcode_col] if postcode_col and pd.notna(row[postcode_col]) else None
+    
+    # Get competition name for search links
+    name_col = find_name_column(pd.DataFrame([row]))
+    comp_name = str(row[name_col]) if name_col and pd.notna(row[name_col]) else "Competition"
+    
+    # Create search links
+    links = create_search_links(comp_name, venue, location)
+    
+    # Add date if available
+    if date_cols and pd.notna(row[date_cols[0]]):
+        date_str = str(row[date_cols[0]])
+        if '00:00:00' in date_str:
+            date_str = date_str.split(' ')[0]
+        details_html += template_manager.render_detail_row("�", "Date", date_str)
 
-    return html
+    # Add venue/location
+    if venue and location:
+        venue_text = f"{venue} ({location})"
+        details_html += template_manager.render_detail_row("🏟️", "Venue", venue_text, links['google_maps'])
+    elif venue:
+        details_html += template_manager.render_detail_row("🏟️", "Venue", venue, links['google_maps'])
+
+    # Add competition link or search link
+    if link_cols and pd.notna(row[link_cols[0]]):
+        details_html += template_manager.render_detail_row("🔗", "Info", "View Competition", row[link_cols[0]])
+    else:
+        details_html += template_manager.render_detail_row("🔍", "Search", "Search Google", links['google'])
+
+    # Add level if available
+    if level_cols and pd.notna(row[level_cols[0]]):
+        details_html += template_manager.render_detail_row("🏅", "Level", f"Level {row[level_cols[0]]} Competition")
+
+    return details_html
 
 
 def save_email_to_file(user_name, html_content):
