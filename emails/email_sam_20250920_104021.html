@@ -1,0 +1,772 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your Athletics Competitions</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            .email-container {
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 300;
+            }
+            .header p {
+                margin: 10px 0 0 0;
+                opacity: 0.9;
+                font-size: 16px;
+            }
+            .content {
+                padding: 30px;
+            }
+            .greeting {
+                font-size: 18px;
+                margin-bottom: 20px;
+                color: #555;
+            }
+            .search-info {
+                background-color: #f8f9fa;
+                border-left: 4px solid #667eea;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 0 5px 5px 0;
+            }
+            .competition {
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                overflow: hidden;
+                transition: box-shadow 0.3s ease;
+            }
+            .competition:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            .competition-header {
+                background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 15px 20px;
+                border-bottom: 1px solid #dee2e6;
+            }
+            .competition-name {
+                font-size: 18px;
+                font-weight: 600;
+                color: #495057;
+                margin: 0;
+            }
+            .competition-host {
+                font-size: 14px;
+                font-weight: 400;
+                color: #6c757d;
+                margin: 0;
+            }
+            .distance-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #28a745, #20c997);
+                color: white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: 500;
+                margin-top: 5px;
+            }
+            .competition-details {
+                padding: 20px;
+            }
+            .detail-row {
+                display: flex;
+                margin-bottom: 10px;
+                align-items: center;
+            }
+            .detail-label {
+                font-weight: 600;
+                color: #6c757d;
+                width: 80px;
+                flex-shrink: 0;
+            }
+            .detail-value {
+                color: #495057;
+                flex: 1;
+            }
+            .summary {
+                background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+                border-radius: 8px;
+                padding: 20px;
+                margin: 30px 0;
+                text-align: center;
+            }
+            .summary h3 {
+                margin: 0 0 15px 0;
+                color: #495057;
+            }
+            .stats {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            .stat {
+                text-align: center;
+                margin: 10px;
+            }
+            .stat-number {
+                font-size: 24px;
+                font-weight: 700;
+                color: #667eea;
+                display: block;
+            }
+            .stat-label {
+                font-size: 14px;
+                color: #6c757d;
+                margin-top: 5px;
+            }
+            .no-competitions {
+                text-align: center;
+                padding: 40px;
+                color: #6c757d;
+            }
+            .no-competitions-icon {
+                font-size: 48px;
+                margin-bottom: 20px;
+            }
+            .footer {
+                background-color: #f8f9fa;
+                padding: 20px;
+                text-align: center;
+                color: #6c757d;
+                font-size: 14px;
+            }
+            .icon {
+                margin-right: 8px;
+                color: #667eea;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">
+                <h1>🏃‍♂️ Your Athletics Competitions</h1>
+                <p>Licensed competitions near you • September 20, 2025</p>
+            </div>
+            
+            <div class="content">
+                <div class="greeting">
+                    Hello Sam! 👋
+                </div>
+                
+                <div class="search-info">
+                    <strong>Search Parameters:</strong><br>
+                    📍 Your location: CM227NR<br>
+                    📏 Maximum distance: 60.0 miles
+                </div>
+    
+                <div class="summary">
+                    <h3>📊 Competition Summary</h3>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-number">18</span>
+                            <div class="stat-label">Total Found</div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">11.9</span>
+                            <div class="stat-label">Closest (miles)</div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">56.0</span>
+                            <div class="stat-label">Furthest (miles)</div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">35.1</span>
+                            <div class="stat-label">Average (miles)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>🏆 Your Competitions</h2>
+        
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">ESAA Combined Event & Race Walk Championships</div>
+                        <div class="competition-host">Chelmsford</div>
+                        <span class="distance-badge">📍 11.9 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-20</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Chelmsford+Sport+%26+Athletics+CM1+2EH">Chelmsford Sport & Athletics (CM1 2EH)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=ESAA+Combined+Event+%26+Race+Walk+Championships+Chelmsford+Sport+%26+Athletics+CM1+2EH+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">ESAA Combined Event & Race Walk Championships</div>
+                        <div class="competition-host">Chelmsford</div>
+                        <span class="distance-badge">📍 11.9 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-21</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Chelmsford+Sport+%26+Athletics+CM1+2EH">Chelmsford Sport & Athletics (CM1 2EH)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=ESAA+Combined+Event+%26+Race+Walk+Championships+Chelmsford+Sport+%26+Athletics+CM1+2EH+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Dartford Harriers AC Club Championships</div>
+                        <div class="competition-host">Dartford</div>
+                        <span class="distance-badge">📍 25.1 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-28</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Central+Park+Athletics+Arena+DA1+1JP">Central Park Athletics Arena (DA1 1JP)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Dartford+Harriers+AC+Club+Championships+Central+Park+Athletics+Arena+DA1+1JP+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Self Transcendence 24 Hour Track Race</div>
+                        <div class="competition-host">Battersea Park</div>
+                        <span class="distance-badge">📍 26.6 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-20</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Millenium+Arena+SW11+4NJ">Millenium Arena (SW11 4NJ)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Self+Transcendence+24+Hour+Track+Race+Millenium+Arena+SW11+4NJ+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 2 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Self Transcendence 24 Hour Track Race</div>
+                        <div class="competition-host">Battersea Park</div>
+                        <span class="distance-badge">📍 26.6 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-21</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Millenium+Arena+SW11+4NJ">Millenium Arena (SW11 4NJ)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Self+Transcendence+24+Hour+Track+Race+Millenium+Arena+SW11+4NJ+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 2 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Dacorum Athletics Club Track 5,000m Championships</div>
+                        <div class="competition-host">Hemel Hempstead</div>
+                        <span class="distance-badge">📍 27.6 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-25</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Jarman+Park+HP2+4JS">Jarman Park (HP2 4JS)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Dacorum+Athletics+Club+Track+5%2C000m+Championships+Jarman+Park+HP2+4JS+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">JW Polecats Invitation Vault</div>
+                        <div class="competition-host">Bromley</div>
+                        <span class="distance-badge">📍 29.6 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-27</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Norman+Park+Athletic+Track+BR2+9EJ">Norman Park Athletic Track (BR2 9EJ)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=JW+Polecats+Invitation+Vault+Norman+Park+Athletic+Track+BR2+9EJ+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Colchester Harriers Invitation Throws</div>
+                        <div class="competition-host">Colchester</div>
+                        <span class="distance-badge">📍 30.7 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-28</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Colchester+Station+Athletics+Track+CO2+7GN">Colchester Station Athletics Track (CO2 7GN)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Colchester+Harriers+Invitation+Throws+Colchester+Station+Athletics+Track+CO2+7GN+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Colchester Harriers Invitation Throws</div>
+                        <div class="competition-host">Colchester</div>
+                        <span class="distance-badge">📍 30.7 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-10-19</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Colchester+Station+Athletics+Track+CO2+7GN">Colchester Station Athletics Track (CO2 7GN)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Colchester+Harriers+Invitation+Throws+Colchester+Station+Athletics+Track+CO2+7GN+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Biggleswade Open</div>
+                        <div class="competition-host">Sandy</div>
+                        <span class="distance-badge">📍 30.8 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-27</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Sandy+Sports+Centre+SG19+1BL">Sandy Sports Centre (SG19 1BL)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Biggleswade+Open+Sandy+Sports+Centre+SG19+1BL+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">East Anglian League Final</div>
+                        <div class="competition-host">Bury St. Edmunds</div>
+                        <span class="distance-badge">📍 37.8 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-21</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/West+Suffolk+Athletics+Arena+IP33+3TT">West Suffolk Athletics Arena (IP33 3TT)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=East+Anglian+League+Final+West+Suffolk+Athletics+Arena+IP33+3TT+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">West Suffolk Final Fling</div>
+                        <div class="competition-host">Bury St. Edmunds</div>
+                        <span class="distance-badge">📍 37.8 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-30</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/West+Suffolk+Athletics+Arena+IP33+3TT">West Suffolk Athletics Arena (IP33 3TT)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=West+Suffolk+Final+Fling+West+Suffolk+Athletics+Arena+IP33+3TT+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Huntingdonshire AC Club Championships</div>
+                        <div class="competition-host">St. Ives</div>
+                        <span class="distance-badge">📍 38.7 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-10-19</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/One+Leisure+Outdoor+Centre+-+St.+Ives+PE27+6SJ">One Leisure Outdoor Centre - St. Ives (PE27 6SJ)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Huntingdonshire+AC+Club+Championships+One+Leisure+Outdoor+Centre+-+St.+Ives+PE27+6SJ+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Nick Phipps Athletics Meet</div>
+                        <div class="competition-host">Woking</div>
+                        <span class="distance-badge">📍 47.6 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-21</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Woking+Sportsbox+GU22+0AF">Woking Sportsbox (GU22 0AF)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Nick+Phipps+Athletics+Meet+Woking+Sportsbox+GU22+0AF+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Invicta East Kent AC Open Meeting</div>
+                        <div class="competition-host">Canterbury</div>
+                        <span class="distance-badge">📍 52.2 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-20</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Canterbury+High+School+CT2+8QA">Canterbury High School (CT2 8QA)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Invicta+East+Kent+AC+Open+Meeting+Canterbury+High+School+CT2+8QA+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Reading AC Club Championships</div>
+                        <div class="competition-host">Reading</div>
+                        <span class="distance-badge">📍 54.0 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-28</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Palmer+Park+Athletic+Track+RG6+1LF">Palmer Park Athletic Track (RG6 1LF)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Reading+AC+Club+Championships+Palmer+Park+Athletic+Track+RG6+1LF+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Eastern Combined  Events & Open</div>
+                        <div class="competition-host">Peterborough</div>
+                        <span class="distance-badge">📍 56.0 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-28</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Embankment+Athletics+Track+PE1+5BW">Embankment Athletics Track (PE1 5BW)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Eastern+Combined++Events+%26+Open+Embankment+Athletics+Track+PE1+5BW+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+                <div class="competition">
+                    <div class="competition-header">
+                        <div class="competition-name">Peterborough & Nene Valley AC Final Fling</div>
+                        <div class="competition-host">Peterborough</div>
+                        <span class="distance-badge">📍 56.0 miles away</span>
+                    </div>
+                    <div class="competition-details">
+            
+                        <div class="detail-row">
+                            <span class="detail-label icon">📅</span>
+                            <span class="detail-value">2025-09-25</span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏟️</span>
+                            <span class="detail-value"><a href="https://www.google.com/maps/search/Embankment+Athletics+Track+PE1+5BW">Embankment Athletics Track (PE1 5BW)</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🔗</span>
+                            <span class="detail-value"><a href="https://www.google.com/search?q=Peterborough+%26+Nene+Valley+AC+Final+Fling+Embankment+Athletics+Track+PE1+5BW+athletics">Search Google</a></span>
+                        </div>
+                
+                        <div class="detail-row">
+                            <span class="detail-label icon">🏅</span>
+                            <span class="detail-value">Level 1 Competition</span>
+                        </div>
+                
+                    </div>
+                </div>
+            
+            </div>
+            
+            <div class="footer">
+                <p>Generated on September 20, 2025 by Licensed Competitions Tracker</p>
+                <p>Data sourced from England Athletics</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
