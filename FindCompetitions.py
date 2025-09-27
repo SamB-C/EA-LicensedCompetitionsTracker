@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 from PostCodeDistanceCalc import PostcodeDistanceCalculator
-from ParseSpreadsheet import get_latest_spreadsheet, parse_spreadsheet_to_dataframe
+from ParseSpreadsheet import get_latest_spreadsheet, parse_spreadsheet_to_dataframe, enrich_with_coordinates
 
 
 def get_user_input():
@@ -98,11 +98,40 @@ def find_name_column(df):
     return df.columns[0] if len(df.columns) > 0 else None
 
 
-def find_competitions_within_distance(postcode, max_distance):
+def load_competition_data():
+    # Load competitions data
+    latest_file = get_latest_spreadsheet()
+    if not latest_file:
+        print("No spreadsheet files found in downloads folder.")
+        print("Please run DownloadSpreadsheet.py first to download competition data.")
+        return None
+
+    print(f"Loading data from: {Path(latest_file).name}")
+
+    df = parse_spreadsheet_to_dataframe(latest_file)
+
+    if df is None or len(df) == 0:
+        print("Could not load competition data.")
+        return None
+
+    print(f"Loaded {len(df)} competitions")
+
+    # Enrich with coordinates if not already present
+    if 'latitude' not in df.columns or 'longitude' not in df.columns:
+        print("Enriching data with postcode coordinates...")
+        df = enrich_with_coordinates(df)
+    else:
+        print("Using existing coordinate data")
+
+    return df
+
+
+def find_competitions_within_distance(df, postcode, max_distance):
     """
     Find all competitions within the specified distance of the postcode.
 
     Args:
+        df (pd.DataFrame): The competitions dataframe (including longitude/latitude)
         postcode (str): User's postcode
         max_distance (float): Maximum distance in miles
 
@@ -122,22 +151,6 @@ def find_competitions_within_distance(postcode, max_distance):
 
     print(
         f"Your location coordinates: {calc.base_coords[0]:.4f}, {calc.base_coords[1]:.4f}")
-
-    # Load competitions data
-    latest_file = get_latest_spreadsheet()
-    if not latest_file:
-        print("No spreadsheet files found in downloads folder.")
-        print("Please run DownloadSpreadsheet.py first to download competition data.")
-        return None
-
-    print(f"Loading data from: {Path(latest_file).name}")
-    df = parse_spreadsheet_to_dataframe(latest_file)
-
-    if df is None or len(df) == 0:
-        print("Could not load competition data.")
-        return None
-
-    print(f"Loaded {len(df)} competitions")
 
     # Find postcode column
     postcode_col = find_postcode_column(df)
@@ -245,6 +258,11 @@ def save_results(competitions_df, postcode, max_distance):
 def main():
     """Main function to find competitions near a postcode."""
     try:
+        # Load competition data first
+        df = load_competition_data()
+        if df is None:
+            return
+
         # Get user input
         postcode, max_distance = get_user_input()
 
@@ -254,7 +272,7 @@ def main():
 
         # Find competitions
         competitions = find_competitions_within_distance(
-            postcode, max_distance)
+            df, postcode, max_distance)
 
         # Display results
         display_results(competitions, max_distance)

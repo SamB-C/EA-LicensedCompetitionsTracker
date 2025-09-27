@@ -1,4 +1,4 @@
-from FindCompetitions import find_name_column, find_competitions_within_distance, find_postcode_column
+from FindCompetitions import find_name_column, find_competitions_within_distance, find_postcode_column, load_competition_data
 from EmailTemplateManager import EmailTemplateManager
 from dotenv import load_dotenv
 import os
@@ -140,36 +140,42 @@ def generate_html_email(user_name, user_email, postcode, max_distance, competiti
         competitions_content = template_manager.render_no_competitions()
     else:
         # Generate summary statistics
-        competitions_content = template_manager.render_summary_stats(competitions_df)
+        competitions_content = template_manager.render_summary_stats(
+            competitions_df)
         competitions_content += "\n<h2>🏆 Your Competitions</h2>\n"
 
         # Find column mappings
         name_col = find_name_column(competitions_df)
-        host_cols = [col for col in competitions_df.columns if 'pot venue' in col.lower()]
+        host_cols = [
+            col for col in competitions_df.columns if 'pot venue' in col.lower()]
         postcode_col = find_postcode_column(competitions_df)
-        date_cols = [col for col in competitions_df.columns if 'date' in col.lower()]
+        date_cols = [
+            col for col in competitions_df.columns if 'date' in col.lower()]
         venue_cols = [col for col in competitions_df.columns if any(
             word in col.lower() for word in ['venue', 'location', 'place'])]
-        level_cols = [col for col in competitions_df.columns if 'level' in col.lower() 
-                     or 'licence' in col.lower()]
-        link_cols = [col for col in competitions_df.columns if 'link' in col.lower() 
-                    or 'url' in col.lower() or 'wpa endorsed' in col.lower()]
+        level_cols = [col for col in competitions_df.columns if 'level' in col.lower()
+                      or 'licence' in col.lower()]
+        link_cols = [col for col in competitions_df.columns if 'link' in col.lower()
+                     or 'url' in col.lower() or 'wpa endorsed' in col.lower()]
 
         # Generate each competition card
         for i, (_, row) in enumerate(competitions_df.iterrows(), 1):
             distance = row['distance_miles']
 
             # Get competition name and host
-            name = str(row[name_col]) if name_col and pd.notna(row[name_col]) else f"Competition {i}"
-            host = str(row[host_cols[0]]) if host_cols and pd.notna(row[host_cols[0]]) else "Unknown Host"
+            name = str(row[name_col]) if name_col and pd.notna(
+                row[name_col]) else f"Competition {i}"
+            host = str(row[host_cols[0]]) if host_cols and pd.notna(
+                row[host_cols[0]]) else "Unknown Host"
 
             # Generate competition details
-            details_html = generate_competition_details(row, venue_cols, postcode_col, 
-                                                      date_cols, link_cols, level_cols, 
-                                                      template_manager)
+            details_html = generate_competition_details(row, venue_cols, postcode_col,
+                                                        date_cols, link_cols, level_cols,
+                                                        template_manager)
 
             # Render the competition card
-            competition_card = template_manager.render_competition_card(name, host, distance, details_html)
+            competition_card = template_manager.render_competition_card(
+                name, host, distance, details_html)
             competitions_content += competition_card
 
     # Render the complete email
@@ -185,51 +191,60 @@ def generate_html_email(user_name, user_email, postcode, max_distance, competiti
 def generate_competition_details(row, venue_cols, postcode_col, date_cols, link_cols, level_cols, template_manager):
     """
     Generate HTML for competition details section.
-    
+
     Args:
         row: DataFrame row with competition data
         venue_cols, postcode_col, date_cols, link_cols, level_cols: Column references
         template_manager: EmailTemplateManager instance
-        
+
     Returns:
         str: HTML for competition details
     """
     details_html = ""
-    
+
     # Get venue and location info
-    venue = row[venue_cols[0]] if venue_cols and pd.notna(row[venue_cols[0]]) else None
-    location = row[postcode_col] if postcode_col and pd.notna(row[postcode_col]) else None
-    
+    venue = row[venue_cols[0]] if venue_cols and pd.notna(
+        row[venue_cols[0]]) else None
+    location = row[postcode_col] if postcode_col and pd.notna(
+        row[postcode_col]) else None
+
     # Get competition name for search links
     name_col = find_name_column(pd.DataFrame([row]))
-    comp_name = str(row[name_col]) if name_col and pd.notna(row[name_col]) else "Competition"
-    
+    comp_name = str(row[name_col]) if name_col and pd.notna(
+        row[name_col]) else "Competition"
+
     # Create search links
     links = create_search_links(comp_name, venue, location)
-    
+
     # Add date if available
     if date_cols and pd.notna(row[date_cols[0]]):
         date_str = str(row[date_cols[0]])
         if '00:00:00' in date_str:
             date_str = date_str.split(' ')[0]
-        details_html += template_manager.render_detail_row("�", "Date", date_str)
+        details_html += template_manager.render_detail_row(
+            "�", "Date", date_str)
 
     # Add venue/location
     if venue and location:
         venue_text = f"{venue} ({location})"
-        details_html += template_manager.render_detail_row("🏟️", "Venue", venue_text, links['google_maps'])
+        details_html += template_manager.render_detail_row(
+            "🏟️", "Venue", venue_text, links['google_maps'])
     elif venue:
-        details_html += template_manager.render_detail_row("🏟️", "Venue", venue, links['google_maps'])
+        details_html += template_manager.render_detail_row(
+            "🏟️", "Venue", venue, links['google_maps'])
 
     # Add competition link or search link
     if link_cols and pd.notna(row[link_cols[0]]):
-        details_html += template_manager.render_detail_row("🔗", "Info", "View Competition", row[link_cols[0]])
+        details_html += template_manager.render_detail_row(
+            "🔗", "Info", "View Competition", row[link_cols[0]])
     else:
-        details_html += template_manager.render_detail_row("🔍", "Search", "Search Google", links['google'])
+        details_html += template_manager.render_detail_row(
+            "🔍", "Search", "Search Google", links['google'])
 
     # Add level if available
     if level_cols and pd.notna(row[level_cols[0]]):
-        details_html += template_manager.render_detail_row("🏅", "Level", f"Level {row[level_cols[0]]} Competition")
+        details_html += template_manager.render_detail_row(
+            "🏅", "Level", f"Level {row[level_cols[0]]} Competition")
 
     return details_html
 
@@ -369,6 +384,9 @@ def process_all_users():
     print(f"Processing {len(users_df)} users...")
     print()
 
+    # Load latest competition data
+    df = load_competition_data()
+
     for i, (_, user) in enumerate(users_df.iterrows(), 1):
         user_name = user['Name']
         user_email = user['Email']
@@ -380,7 +398,7 @@ def process_all_users():
 
         # Get competitions for this user
         competitions = find_competitions_within_distance(
-            postcode, max_distance)
+            df, postcode, max_distance)
 
         # Generate HTML email
         html_content = generate_html_email(

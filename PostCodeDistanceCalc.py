@@ -78,6 +78,41 @@ class PostcodeDistanceCalculator:
 
         return c * r
 
+    def calculate_distance_with_coordinates(self, lat1, lon1, lat2, lon2):
+        """
+        Calculate distance between two coordinate points using Haversine formula.
+
+        Args:
+            lat1, lon1: Latitude and longitude of first point
+            lat2, lon2: Latitude and longitude of second point
+
+        Returns:
+            float: Distance in miles, or None if coordinates are invalid
+        """
+        if None in (lat1, lon1, lat2, lon2):
+            return None
+
+        try:
+            # Convert latitude and longitude from degrees to radians
+            lat1, lon1, lat2, lon2 = map(
+                math.radians, [lat1, lon1, lat2, lon2])
+
+            # Haversine formula
+            dlat = lat2 - lat1
+            dlon = lon2 - lon1
+            a = math.sin(dlat/2)**2 + math.cos(lat1) * \
+                math.cos(lat2) * math.sin(dlon/2)**2
+            c = 2 * math.asin(math.sqrt(a))
+
+            # Radius of earth in miles
+            r = 3956
+
+            return c * r
+
+        except Exception as e:
+            print(f"Error calculating distance: {e}")
+            return None
+
     def calculate_distance_to_postcode(self, target_postcode):
         """
         Calculate distance from base postcode to target postcode.
@@ -96,20 +131,20 @@ class PostcodeDistanceCalculator:
         if not target_coords:
             return None
 
-        distance = self.haversine_distance(
+        distance = self.calculate_distance_with_coordinates(
             self.base_coords[0], self.base_coords[1],
             target_coords[0], target_coords[1]
         )
 
-        return round(distance, 1)
+        return round(distance, 1) if distance else None
 
-    def add_distances_to_dataframe(self, df, postcode_column, distance_column='distance_miles'):
+    def add_distances_to_dataframe(self, df, postcode_column=None, distance_column='distance_miles'):
         """
-        Add distance calculations to a DataFrame containing postcodes.
+        Add distance calculations to a DataFrame with pre-fetched coordinates.
 
         Args:
-            df (pd.DataFrame): DataFrame with postcode column
-            postcode_column (str): Name of the column containing postcodes
+            df (pd.DataFrame): DataFrame with postcode and coordinate columns
+            postcode_column (str): Name of the column containing postcodes (optional)
             distance_column (str): Name of the new column for distances
 
         Returns:
@@ -119,11 +154,54 @@ class PostcodeDistanceCalculator:
             print("No base postcode set. Cannot calculate distances.")
             return df
 
+        # Check for pre-fetched coordinate columns
+        if 'latitude' in df.columns and 'longitude' in df.columns:
+            print(
+                f"Using pre-fetched coordinates to calculate distances from {self.base_postcode}...")
+            print(f"Processing {len(df)} rows...")
+
+            # Calculate distances using pre-fetched coordinates
+            distances = []
+            for _, row in df.iterrows():
+                if pd.notna(row['latitude']) and pd.notna(row['longitude']):
+                    distance = self.calculate_distance_with_coordinates(
+                        self.base_coords[0], self.base_coords[1],
+                        row['latitude'], row['longitude']
+                    )
+                    distances.append(round(distance, 1) if distance else None)
+                else:
+                    distances.append(None)
+
+            df[distance_column] = distances
+
+        else:
+            # Fallback to old method if coordinates not available
+            print("No coordinate columns found, falling back to API lookups...")
+            return self._add_distances_legacy(df, postcode_column, distance_column)
+
+        # Show summary
+        valid_distances = [d for d in distances if d is not None]
+        if valid_distances:
+            print(f"\nDistance calculation complete!")
+            print(f"Successfully calculated {len(valid_distances)} distances")
+            print(f"Closest: {min(valid_distances):.1f} miles")
+            print(f"Furthest: {max(valid_distances):.1f} miles")
+            print(
+                f"Average: {sum(valid_distances)/len(valid_distances):.1f} miles")
+
+        return df
+
+    def _add_distances_legacy(self, df, postcode_column, distance_column='distance_miles'):
+        """
+        Legacy method: Add distances using API lookups for each postcode.
+        Only used when coordinates are not pre-fetched.
+        """
         if postcode_column not in df.columns:
             print(f"Column '{postcode_column}' not found in DataFrame.")
             return df
 
-        print(f"Calculating distances from {self.base_postcode}...")
+        print(
+            f"Calculating distances from {self.base_postcode} using API lookups...")
         print(f"Processing {len(df)} rows...")
 
         distances = []
@@ -143,17 +221,6 @@ class PostcodeDistanceCalculator:
                 time.sleep(0.1)
 
         df[distance_column] = distances
-
-        # Show summary
-        valid_distances = [d for d in distances if d is not None]
-        if valid_distances:
-            print(f"\nDistance calculation complete!")
-            print(f"Successfully calculated {len(valid_distances)} distances")
-            print(f"Closest: {min(valid_distances):.1f} miles")
-            print(f"Furthest: {max(valid_distances):.1f} miles")
-            print(
-                f"Average: {sum(valid_distances)/len(valid_distances):.1f} miles")
-
         return df
 
 

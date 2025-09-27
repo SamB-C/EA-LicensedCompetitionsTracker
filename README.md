@@ -5,7 +5,7 @@ A comprehensive Python-based tool for tracking and finding licensed athletics co
 ## ✨ Features
 
 - **🔄 Automatic Data Download**: Downloads the latest licensed competitions data from England Athletics
-- **📍 Distance Calculation**: Uses UK postcode data to calculate distances to competition venues
+- **📍 Optimized Distance Calculation**: Pre-fetches postcode coordinates during parsing to minimize API calls
 - **🔍 Competition Search**: Find competitions within a specified distance from your location
 - **📧 Email Reports**: Generate and send beautiful HTML email reports with nearby competitions
 - **👥 Multi-User Support**: Support for multiple users with different locations and distance preferences
