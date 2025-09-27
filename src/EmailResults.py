@@ -1,4 +1,4 @@
-from FindCompetitions import find_name_column, find_competitions_within_distance, find_postcode_column, load_competition_data
+from src.FindCompetitions import find_name_column, find_competitions_within_distance, find_postcode_column, load_competition_data
 from EmailTemplateManager import EmailTemplateManager
 from dotenv import load_dotenv
 import os

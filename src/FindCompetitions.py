@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
-from PostCodeDistanceCalc import PostcodeDistanceCalculator
-from ParseSpreadsheet import get_latest_spreadsheet, parse_spreadsheet_to_dataframe, enrich_with_coordinates
+from src.PostCodeDistanceCalc import PostcodeDistanceCalculator
+from src.ParseSpreadsheet import get_latest_spreadsheet, parse_spreadsheet_to_dataframe, enrich_with_coordinates
 
 
 def get_user_input():
