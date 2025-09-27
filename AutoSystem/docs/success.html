@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Athletics Competitions Tracker!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎉 Welcome Aboard!</h1>
+            <p class="subtitle">You've successfully joined the mailing list</p>
+        </header>
+        
+        <main style="text-align: center;">
+            <div class="success-content">
+                <div style="font-size: 4rem; margin: 30px 0;">✅</div>
+                
+                <h2>What happens next?</h2>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h3>📅 First of Every Month</h3>
+                        <p>You'll receive an email with all licensed athletics competitions within your specified distance.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h3>📧 Personalized for You</h3>
+                        <p>Competitions are sorted by distance from your postcode (<span id="userPostcode">your location</span>).</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h3>📱 Easy Integration</h3>
+                        <p>Each email includes calendar links and search options to help you find more information.</p>
+                    </div>
+                </div>
+                
+                <div class="next-steps">
+                    <h3>In the meantime:</h3>
+                    <ul style="text-align: left; max-width: 400px; margin: 20px auto;">
+                        <li>Check your spam folder if emails don't arrive</li>
+                        <li>Add <strong>noreply@your-domain.com</strong> to your contacts</li>
+                        <li>Share this with fellow athletes!</li>
+                    </ul>
+                </div>
+                
+                <a href="index.html" class="btn-primary" style="display: inline-block; text-decoration: none; margin-top: 30px;">
+                    Back to Homepage
+                </a>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Questions? Email us at <a href="mailto:support@your-domain.com">support@your-domain.com</a></p>
+        </footer>
+    </div>
+
+    <style>
+        .success-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .timeline {
+            margin: 40px 0;
+        }
+        
+        .timeline-item {
+            background: #f8f9fa;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .timeline-item h3 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .next-steps {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+    </style>
+
+    <script>
+        // Show user's postcode from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        const postcode = urlParams.get('postcode');
+        
+        if (postcode) {
+            document.getElementById('userPostcode').textContent = postcode;
+        }
+    </script>
+</body>
+</html>

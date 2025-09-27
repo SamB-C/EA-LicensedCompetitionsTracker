@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athletics Competitions Tracker - Join Mailing List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏃‍♂️ Athletics Competitions Tracker</h1>
+            <p class="subtitle">Get monthly emails with licensed athletics competitions near you!</p>
+        </header>
+        
+        <main>
+            <form id="signupForm" class="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required 
+                           placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="your.email@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="postcode">UK Postcode *</label>
+                    <input type="text" id="postcode" name="postcode" required 
+                           placeholder="e.g., CM22 7NR" pattern="^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$">
+                    <small>We use this to find competitions near you</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="maxDistance">Maximum Distance</label>
+                    <select id="maxDistance" name="maxDistance">
+                        <option value="25">25 miles</option>
+                        <option value="50" selected>50 miles</option>
+                        <option value="75">75 miles</option>
+                        <option value="100">100 miles</option>
+                        <option value="150">150 miles</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-primary">
+                    <span class="btn-text">Join Mailing List</span>
+                    <span class="btn-loading" style="display: none;">Signing up...</span>
+                </button>
+            </form>
+            
+            <div id="message" class="message" style="display: none;"></div>
+            
+            <section class="features">
+                <h2>What you'll receive:</h2>
+                <ul>
+                    <li>📧 Monthly emails with competitions near your postcode</li>
+                    <li>📍 Competitions sorted by distance from you</li>
+                    <li>📅 One-click calendar integration (Google, Outlook, Apple)</li>
+                    <li>🔍 Direct links to competition information</li>
+                    <li>📊 Summary statistics and competition details</li>
+                    <li>🚫 Unsubscribe anytime</li>
+                </ul>
+                
+                <h3>Data Source</h3>
+                <p>Competition data is sourced monthly from England Athletics official licensed facilities database.</p>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Built with ❤️ for the UK athletics community</p>
+            <p><a href="https://github.com/samb-c/athletics-competitions-tracker" target="_blank">View on GitHub</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Configuration - Replace with your actual Supabase details
+        const SUPABASE_URL = 'https://oqzenatuceeoydkxizpy.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xemVuYXR1Y2Vlb3lka3hpenB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwMDQyOTAsImV4cCI6MjA3NDU4MDI5MH0.ViZ9Pp612cbsBK-O1rs7fTat6q3CXJLjS37vpF0Vtyg';
+
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            const messageDiv = document.getElementById('message');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            messageDiv.style.display = 'none';
+            
+            try {
+                // Validate postcode format
+                const postcodeRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/;
+                if (!postcodeRegex.test(data.postcode.toUpperCase())) {
+                    throw new Error('Please enter a valid UK postcode');
+                }
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/competition_users`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        name: data.name.trim(),
+                        email: data.email.toLowerCase().trim(),
+                        postcode: data.postcode.toUpperCase().replace(/\s+/g, ' ').trim(),
+                        max_distance: parseInt(data.maxDistance)
+                    })
+                });
+                
+                if (response.ok) {
+                    // Success - redirect to success page
+                    window.location.href = 'success.html?email=' + encodeURIComponent(data.email);
+                } else {
+                    const errorData = await response.json();
+                    if (response.status === 409 || (errorData.message && errorData.message.includes('duplicate'))) {
+                        throw new Error('This email is already registered. Check your inbox for previous emails!');
+                    } else {
+                        throw new Error(errorData.message || 'Failed to sign up. Please try again.');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                messageDiv.className = 'message error';
+                messageDiv.textContent = '❌ ' + error.message;
+                messageDiv.style.display = 'block';
+                
+                // Reset form state
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+            }
+        });
+
+        // Auto-format postcode as user types
+        document.getElementById('postcode').addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (value.length > 4) {
+                value = value.slice(0, -3) + ' ' + value.slice(-3);
+            }
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>
