@@ -1,5 +1,5 @@
 from EmailTemplateManager import EmailTemplateManager
-from ParseSpreadsheet import parse_spreadsheet_to_dataframe, enrich_with_coordinates
+from ParseSpreadsheet import enrich_with_coordinates
 from PostCodeDistanceCalc import PostcodeDistanceCalculator
 import os
 import sys
@@ -7,6 +7,7 @@ import pandas as pd
 import requests
 from datetime import datetime
 from pathlib import Path
+from io import BytesIO
 
 # Add current directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -33,19 +34,55 @@ def get_users_from_supabase():
 
 
 def download_competitions_data():
-    """Download and parse the latest competitions data."""
-    print("Downloading latest competition data from England Athletics...")
+    """Download and parse the latest competitions data directly into memory."""
+    print("📥 Downloading latest competition data from England Athletics...")
 
-    # This is a simplified version - you'll need to implement the actual
-    # download logic from your DownloadSpreadsheet.py
-    url = "https://www.englandathletics.org/athletics-and-running/england-athletics-facilities-and-clubs/track-and-field-facilities/licensed-facilities/"
+    # The direct download URL for the England Athletics spreadsheet
+    url = "https://www.englandathletics.org/?media-alias=edddfc51d3f1e36a1f78"
 
-    # For now, return None and handle gracefully
-    # You'll need to implement the actual download and parsing logic
-    print("⚠️  Note: Automatic download not implemented yet.")
-    print("   You may need to manually update the data source.")
+    try:
+        # Set up headers to mimic a browser request
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
 
-    return None
+        print(f"🔗 Downloading from: {url}")
+
+        # Download the file directly into memory
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+
+        # Get file content as bytes
+        file_content = response.content
+        file_size = len(file_content)
+
+        print(f"✅ Download completed! File size: {file_size:,} bytes")
+
+        # Create a BytesIO object to mimic a file for pandas
+        file_buffer = BytesIO(file_content)
+        # Parse the spreadsheet directly from memory
+        print("📊 Parsing spreadsheet data...")
+        df = pd.read_excel(file_buffer, engine='openpyxl')
+
+        print(f"📈 Loaded {len(df)} competitions from spreadsheet")
+
+        # Enrich with coordinates
+        print("🗺️ Enriching data with postcode coordinates...")
+        df_enriched = enrich_with_coordinates(df)
+
+        print(f"✅ Data processing complete!")
+        return df_enriched
+
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error downloading file: {e}")
+        return None
+    except pd.errors.EmptyDataError:
+        print("❌ Downloaded file appears to be empty or corrupted")
+        return None
 
 
 def send_email_via_mailgun(to_email, subject, html_content):
@@ -134,7 +171,6 @@ def main():
 
         # Download competition data
         competitions_df = download_competitions_data()
-        competitions_df = enrich_with_coordinates(competitions_df)
         if competitions_df is None:
             print("❌ Could not load competition data. Exiting.")
             # For now, create a dummy DataFrame for testing
