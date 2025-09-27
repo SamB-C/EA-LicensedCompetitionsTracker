@@ -3,6 +3,7 @@ import pandas as pd
 import math
 from pathlib import Path
 import time
+from ParseSpreadsheet import get_latest_spreadsheet, parse_spreadsheet_to_dataframe
 
 
 class PostcodeDistanceCalculator:
@@ -247,7 +248,6 @@ def demo_with_competitions_data():
 
     # Try to load competitions data
     try:
-        from ParseSpreadsheet import get_latest_spreadsheet, parse_spreadsheet_to_dataframe
 
         latest_file = get_latest_spreadsheet()
         if latest_file:
