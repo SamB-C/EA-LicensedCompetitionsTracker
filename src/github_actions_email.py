@@ -1,4 +1,4 @@
-from EmailResults import generate_html_email
+from EmailResults import generate_html_email, send_email, load_email_config
 from ParseSpreadsheet import enrich_with_coordinates
 from PostCodeDistanceCalc import PostcodeDistanceCalculator
 import os
@@ -8,6 +8,7 @@ import requests
 from datetime import datetime
 from pathlib import Path
 from io import BytesIO
+from time import sleep
 
 # Add current directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -85,27 +86,6 @@ def download_competitions_data():
         return None
 
 
-def send_email_via_mailgun(to_email, subject, html_content):
-    """Send email using Mailgun."""
-    mailgun_domain = os.environ['MAILGUN_DOMAIN']
-    api_key = os.environ['MAILGUN_API_KEY']
-    from_email = os.environ.get(
-        'FROM_EMAIL', f'Athletics Tracker <noreply@{mailgun_domain}>')
-
-    response = requests.post(
-        f"https://api.mailgun.net/v3/{mailgun_domain}/messages",
-        auth=("api", api_key),
-        data={
-            "from": from_email,
-            "to": to_email,
-            "subject": subject,
-            "html": html_content
-        }
-    )
-    response.raise_for_status()
-    return response
-
-
 def process_user(user, competitions_df):
     """Process a single user and send their email."""
     try:
@@ -143,7 +123,17 @@ def process_user(user, competitions_df):
 
         # Send email
         subject = f"Your Monthly Athletics Competitions - {datetime.now().strftime('%B %Y')}"
-        send_email_via_mailgun(user['email'], subject, html_content)
+        email_config = load_email_config()
+        send_email(
+            to_email=user['email'],
+            subject=subject,
+            html_content=html_content,
+            smtp_server=email_config['smtp_server'],
+            smtp_port=email_config['smtp_port'],
+            username=email_config['username'],
+            password=email_config['password'],
+            from_name=email_config['from_name']
+        )
 
         print(
             f"  ✅ Email sent successfully ({len(competitions)} competitions found)")
@@ -194,6 +184,7 @@ def main():
                 successful_sends += 1
             else:
                 failed_sends += 1
+            sleep(1)  # To avoid hitting email rate limits
 
         # Summary
         print("\n📊 Summary:")

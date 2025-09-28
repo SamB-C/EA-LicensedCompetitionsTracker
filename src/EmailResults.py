@@ -21,13 +21,13 @@ def load_email_config():
         dict: Email configuration or None if not available
     """
     config = {
-        'smtp_server': os.getenv('SMTP_SERVER'),
-        'smtp_port': int(os.getenv('SMTP_PORT', 587)),
-        'username': os.getenv('EMAIL_USERNAME'),
-        'password': os.getenv('EMAIL_PASSWORD'),
-        'from_name': os.getenv('FROM_NAME', 'Athletics Competitions Tracker'),
-        'reply_to': os.getenv('REPLY_TO'),
-        'send_emails': os.getenv('SEND_EMAILS', 'False').lower() == 'true'
+        'smtp_server': os.environ.get('SMTP_SERVER'),
+        'smtp_port': int(os.environ.get('SMTP_PORT', 587)),
+        'username': os.environ.get('EMAIL_USERNAME'),
+        'password': os.environ.get('EMAIL_PASSWORD'),
+        'from_name': os.environ.get('FROM_NAME', 'Athletics Competitions Tracker'),
+        'reply_to': os.environ.get('REPLY_TO'),
+        'send_emails': os.environ.get('SEND_EMAILS', 'False').lower() == 'true'
     }
 
     # Check if required fields are available
