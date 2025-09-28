@@ -88,60 +88,55 @@ def download_competitions_data():
 
 def process_user(user, competitions_df):
     """Process a single user and send their email."""
-    try:
-        postcode = user['postcode']
-        max_distance = user['max_distance']
+    postcode = user['postcode']
+    max_distance = user['max_distance']
 
-        print(
-            f"Processing {user['name']} ({user['email']}) - {postcode}, {max_distance} miles")
+    print(
+        f"Processing {user['name']} ({user['email']}) - {postcode}, {max_distance} miles")
 
-        # Find competitions within distance
-        calc = PostcodeDistanceCalculator(postcode)
-        if not calc.base_coords:
-            print(f"  ⚠️  Could not find coordinates for {postcode}")
-            return False
-
-        # Add distances to dataframe
-        df_with_distances = calc.add_distances_to_dataframe(competitions_df)
-
-        # Filter competitions within distance
-        competitions = df_with_distances[
-            (df_with_distances['distance_miles'].notna()) &
-            (df_with_distances['distance_miles'] <= max_distance)
-        ].copy()
-
-        competitions = competitions.sort_values('distance_miles')
-
-        # Generate email HTML
-        html_content = generate_html_email(
-            user['name'],
-            user['email'],
-            postcode,
-            max_distance,
-            competitions
-        )
-
-        # Send email
-        subject = f"Your Monthly Athletics Competitions - {datetime.now().strftime('%B %Y')}"
-        email_config = load_email_config()
-        send_email(
-            to_email=user['email'],
-            subject=subject,
-            html_content=html_content,
-            smtp_server=email_config['smtp_server'],
-            smtp_port=email_config['smtp_port'],
-            username=email_config['username'],
-            password=email_config['password'],
-            from_name=email_config['from_name']
-        )
-
-        print(
-            f"  ✅ Email sent successfully ({len(competitions)} competitions found)")
-        return True
-
-    except Exception as e:
-        print(f"  ❌ Failed to process {user['email']}: {e}")
+    # Find competitions within distance
+    calc = PostcodeDistanceCalculator(postcode)
+    if not calc.base_coords:
+        print(f"  ⚠️  Could not find coordinates for {postcode}")
         return False
+
+    # Add distances to dataframe
+    df_with_distances = calc.add_distances_to_dataframe(competitions_df)
+
+    # Filter competitions within distance
+    competitions = df_with_distances[
+        (df_with_distances['distance_miles'].notna()) &
+        (df_with_distances['distance_miles'] <= max_distance)
+    ].copy()
+
+    competitions = competitions.sort_values('distance_miles')
+
+    # Generate email HTML
+    html_content = generate_html_email(
+        user['name'],
+        user['email'],
+        postcode,
+        max_distance,
+        competitions
+    )
+
+    # Send email
+    subject = f"Your Monthly Athletics Competitions - {datetime.now().strftime('%B %Y')}"
+    email_config = load_email_config()
+    send_email(
+        to_email=user['email'],
+        subject=subject,
+        html_content=html_content,
+        smtp_server=email_config['smtp_server'],
+        smtp_port=email_config['smtp_port'],
+        username=email_config['username'],
+        password=email_config['password'],
+        from_name=email_config['from_name']
+    )
+
+    print(
+        f"  ✅ Email sent successfully ({len(competitions)} competitions found)")
+    return True
 
 
 def main():
