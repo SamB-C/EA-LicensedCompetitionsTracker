@@ -1,4 +1,4 @@
-from EmailTemplateManager import EmailTemplateManager
+from EmailResults import generate_html_email
 from ParseSpreadsheet import enrich_with_coordinates
 from PostCodeDistanceCalc import PostcodeDistanceCalculator
 import os
@@ -106,7 +106,7 @@ def send_email_via_mailgun(to_email, subject, html_content):
     return response
 
 
-def process_user(user, competitions_df, template_manager):
+def process_user(user, competitions_df):
     """Process a single user and send their email."""
     try:
         postcode = user['postcode']
@@ -133,7 +133,7 @@ def process_user(user, competitions_df, template_manager):
         competitions = competitions.sort_values('distance_miles')
 
         # Generate email HTML
-        html_content = template_manager.generate_html_email(
+        html_content = generate_html_email(
             user['name'],
             user['email'],
             postcode,
@@ -184,16 +184,13 @@ def main():
                 'longitude': [-0.1278]
             })
 
-        # Initialize template manager
-        template_manager = EmailTemplateManager()
-
         # Process each user
         print("\n📧 Sending emails...")
         successful_sends = 0
         failed_sends = 0
 
         for user in users:
-            if process_user(user, competitions_df, template_manager):
+            if process_user(user, competitions_df):
                 successful_sends += 1
             else:
                 failed_sends += 1
