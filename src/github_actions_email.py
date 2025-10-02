@@ -1,3 +1,4 @@
+import traceback
 from EmailResults import generate_html_email, send_email, load_email_config
 from ParseSpreadsheet import enrich_with_coordinates
 from PostCodeDistanceCalc import PostcodeDistanceCalculator
@@ -191,6 +192,7 @@ def main():
 
     except Exception as e:
         print(f"❌ Critical error in main process: {e}")
+        print(traceback.format_exc())
         sys.exit(1)
 
 
